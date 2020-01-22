@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//this script moves the camera that provides the rendertexture data for the portal
+//it is based on the smooth portals in unity tutorial by brackeys
 public class PortalCamMove : MonoBehaviour
 {
     Transform playerCam;

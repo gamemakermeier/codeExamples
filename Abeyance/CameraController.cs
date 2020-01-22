@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+// this was my attempt at a 3rd person camera controller for a game that had the player move through somewhat narrow rooms, which was way more challenging than I anticipated
 public class CameraController : MonoBehaviour
 {
     public static CameraController instance;
@@ -138,7 +140,7 @@ public class CameraController : MonoBehaviour
         rayHitDist.Clear();
         centerDist = maxDistance;
         lowestDist = maxDistance;
-        //new
+        //we check with several raycasts is the camera has enough space to every side
         if (Physics.Linecast(playerHead, playerHead + camPointer * maxDistance, out camBackWall, camPushMask))
         {
             rayHitDist.Add(camBackWall.distance - minCamWallDist);
@@ -160,7 +162,7 @@ public class CameraController : MonoBehaviour
         {
             rayHitDist.Add(Mathf.Clamp(camBackWall.distance - minCamWallDist, 0, centerDist));
         }
-
+        //if we hit something, we need to change the camera position accordingly
         if (rayHitDist.Count > 0)
         {
             camDistance = 0;
@@ -172,19 +174,11 @@ public class CameraController : MonoBehaviour
             camDistance /= rayHitDist.Count;
             camDistance = Mathf.Clamp(camDistance, 0, lowestDist * pentaRayMoreThanLowest - minCamWallDist);
         }
+        //if not, we try to push the camera to the ideal range
         else
         {
             camDistance = Mathf.Lerp(camDistance, maxDistance, camMoveSmooth / 5f);
         }
-        //alt
-        /*if (Physics.Linecast(playerHead, playerHead + camPointer * maxDistance, out camBackWall, camPushMask))
-        {
-            camDistance = Mathf.Clamp(camBackWall.distance - minCamWallDist, 0, maxDistance);
-        }
-        else
-        {
-            camDistance = maxDistance;
-        }*/
         camTrans.position = Vector3.Lerp(camTrans.position, playerHead + camPointer * camDistance, camMoveSmooth);
     }
     public void ResetToPlayer()
@@ -195,7 +189,7 @@ public class CameraController : MonoBehaviour
         playerMoveScript.currentForward = new Vector3(camTrans.forward.x, 0, camTrans.forward.z).normalized;
         playerMoveScript.currentRight = new Vector3(camTrans.right.x, 0, camTrans.right.z).normalized;
     }
-
+    //this method handles cases in which the camera would peek into the player mesh and deactivates it before that happens (provided it has the correct settings)
     public void CheckIfPlayerTooClose()
     {
         Vector3 distCheck = camTrans.position - playerHead;
@@ -209,6 +203,7 @@ public class CameraController : MonoBehaviour
         }
     }
 
+    //the camera ghost is used to save the original transform if we ever need to change stuff up from the ordinary
     public void CamGhostSetup()
     {
         playerControlledCam = false;
@@ -217,7 +212,7 @@ public class CameraController : MonoBehaviour
         cameraGhost.transform.rotation = currentCam.transform.rotation;
         cameraGhost.transform.parent = player.transform;
     }
-
+    //this is a special camera mode that is used when the character pushes objects, where the camera rotates to a predetermined position behind the player
     void PushCam()
     {
 
@@ -245,14 +240,9 @@ public class CameraController : MonoBehaviour
         }
     }
 
+    //we return the camera to it's original range
     public void ReturnFromPushing()
     {
-        /* pushHead = playerHead;
-         Debug.DrawRay(pushHead, Vector3.up*10f,Color.red,5f);
-         playerHead = playerPos + player.transform.up * player.transform.localScale.y;
-         */
-        //StartCoroutine(CameraDrive(pushHead, playerHead));
-        //not working properly atm 
         StartCoroutine(CameraDrive(cameraGhost.transform));
     }
     IEnumerator CameraDrive(Transform targetTransform)
@@ -273,14 +263,6 @@ public class CameraController : MonoBehaviour
         playerMoveScript.currentForward = new Vector3(camTrans.forward.x, 0, camTrans.forward.z).normalized;
         playerMoveScript.currentRight = new Vector3(camTrans.right.x, 0, camTrans.right.z).normalized;
         playerControlledCam = true;
-        /*bool breaker = true;
-        if (breaker)
-        {
-            Debug.Break();
-            breaker = false;
-            yield return null;
-
-        }*/
         if (targetTransform.gameObject == cameraGhost)
         {
             Destroy(targetTransform.gameObject);

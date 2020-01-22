@@ -23,12 +23,6 @@ namespace HitchHiker
 		List<float> bottomSlopes;
 		List<float> topSlopes;
 		public string effectName = "DoF";
-		/* //raycast variation
-		public LayerMask outSideLayer;
-		public float maxCheckDist;
-
-		private RaycastHit hit;
-		*/
 		private Transform myTrans;
 
 #if UNITY_STANDALONE && !UNITY_EDITOR
@@ -73,18 +67,9 @@ namespace HitchHiker
 		private void OnUpdate()
 		{
 			if (!GameManager.IsInstantiated || myRig == null)
+			{
 				return;
-
-			/* //raycast variant
-			if (!Physics.Raycast(myTrans.position, myTrans.forward, out hit, maxCheckDist, outSideLayer))
-			{
-				GameManager.Instance.CameraManager.StartEffect(effectName);
 			}
-			else
-			{
-				GameManager.Instance.CameraManager.StopEffect(effectName);
-			}
-			*/
 			//setting up our equation variables
 			float currentYRot = myRig.localRotation.eulerAngles.y;
 			if (currentYRot > 180)

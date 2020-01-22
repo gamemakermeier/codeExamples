@@ -83,11 +83,6 @@ public class Throw : MonoBehaviour
 
 	}
 
-	void FixedUpdate ()
-	{
-		
-	}
-
 	void SelectPotion ()
 	{
 		if (Input.GetKeyDown (KeyCode.Alpha1)) {
@@ -146,6 +141,7 @@ public class Throw : MonoBehaviour
 	void Throwing ()
 	{
 		//rightClickThrow
+		//this throw mode is used for precise shooting, sets the camera to an over the shoulder camera and "slows down time", via gravity and velocity changes
 		if (InputManager.instance.aimInputDown && slowTimer <=slowTimeStartMax) {
 			playerStatus.walking = false;
 			playerStatus.throwing = true;
@@ -164,7 +160,7 @@ public class Throw : MonoBehaviour
 
 
 			targetAquired = Physics.Raycast (new Ray (transform.position, transform.forward), out throwTarget, 2000f, targetLayer);
-
+			//if throwing is possible, we load a new throwee up to the player, so it is visible that he can trow again
 			if (throwTimer <= 0 && !currentThrowee.activeSelf) {
 				ActivateThrowee (currentThrowee);
 				currentThrowee.GetComponent<MeshRenderer> ().enabled = false;
@@ -173,6 +169,7 @@ public class Throw : MonoBehaviour
 			} else {
 				throwTimer -= Time.deltaTime;
 			}
+			//since the throwee is not a child, we set it to our player throw position if it isn't thrown
 			if (!thrown && currentThrowee.activeSelf) {
 				currentThrowee.transform.position = throweePosition.transform.position;
 			}
@@ -235,6 +232,7 @@ public class Throw : MonoBehaviour
 				} else {
 					shootDir = (throwTarget.point - currentThrowee.transform.position).normalized;
 				}
+				//hardcoded due to time issues CHANGE
 				soundList.audioSources [0].Stop ();
 				soundList.audioSources [0].pitch = Random.Range (randomPitchSpit.x * 100, randomPitchSpit.y * 100) / 100;
 				currentThrowee.GetComponent<Rigidbody> ().AddForce (shootDir * throwForce, ForceMode.Impulse);
@@ -242,8 +240,9 @@ public class Throw : MonoBehaviour
 
 				thrown = true;
 				currentThrowee.GetComponent<ThroweeScript> ().thrown = true;
+				//once it's shot, we target a new unactivated throwee
 				Reload ();
-
+				//and set the cooldown for throwing
 				throwTimer = throwReload;
 			}
 		}

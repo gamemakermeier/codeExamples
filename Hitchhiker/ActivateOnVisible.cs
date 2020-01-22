@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+
+//this is a script that activates or deactivates certain objects and scripts depending on if the attached meshrenderer is visible to a camera or not
 [RequireComponent(typeof(MeshRenderer))]
 public class ActivateOnVisible : MonoBehaviour
 {

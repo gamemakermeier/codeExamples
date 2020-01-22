@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+
+//this is the global game state manager, that holds all the variable values, but does not have the object references in the respective scenes
 public class GlobalGameStateManager : MonoBehaviour
 {
     public List<GameState> savedStates;

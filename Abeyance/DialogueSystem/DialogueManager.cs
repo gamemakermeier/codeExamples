@@ -45,10 +45,6 @@ public class DialogueManager : MonoBehaviour
     {
         sentences = new Queue<Sentence>();
     }
-    private void FixedUpdate()
-    {
-        //Debug.Log(currentDialogueTrigger);
-    }
 
     public void StartDialogue(DialogueTrigger dialogueTrigger, Dialogue dialogue)
     {

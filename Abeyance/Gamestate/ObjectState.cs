@@ -11,10 +11,12 @@ public class ObjectState : MonoBehaviour
     public bool gameObjectAffected;
     [HideInInspector]
     public GameState currentGameState;
+    //on start, the script registers itself to the local gameStateManager
     private void Start()
     {
         Register();
     }
+    //registering adds this script to a list, if it isn't already in the list
     public void Register()
     {
         foreach (StateEffect activeScenario in myActiveScenarios.activeScenarios)
@@ -57,6 +59,8 @@ public class ObjectState : MonoBehaviour
             }
         }
     }
+
+    //this method changes the object state according to the info found in the local gameStateManager
     public void Refresh()
     {
 

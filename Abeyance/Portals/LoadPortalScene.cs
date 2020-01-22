@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+
+//this script is used to load the target scene and set up the render texture for the portal, once it is opened
 public class LoadPortalScene : ObjectState
 {
     public GameObject door;
@@ -85,6 +87,7 @@ public class LoadPortalScene : ObjectState
 
     IEnumerator BlockSight()
     {
+        //this guarantees that the view blocker blocks for the entire time it needs to load, but also for a minimum amount of time, even if the loading is faster, to not make it look awkward on fast loads
         minWaitOver = false;
         showstopper.SetActive(true);
         yield return new WaitForSeconds(minWaitTime);
@@ -97,12 +100,14 @@ public class LoadPortalScene : ObjectState
 
     IEnumerator OpenDoor()
     {
+        //we open the door and make it not collide with the player, while the animation is playing
         playerBlocker.SetActive(false);
         door.GetComponent<BoxCollider>().enabled = false;
         myAnim.SetTrigger("playerAction");
         doorSound.pitch = 1 + Random.Range(-1, 2) * 0.1f;
         doorSound.Play();
         yield return new WaitForSeconds(doorOpenTime);
+        //if it is a normal door and not a portal, we close the door after a set amount of time and make it collide with the player again
         if (!portalsActivated)
         {
             myAnim.SetTrigger("playerAction");
@@ -115,6 +120,7 @@ public class LoadPortalScene : ObjectState
 
     void SetupPortal()
     {
+        //we target the last loaded scene and get the landing point for that scene (currently hard coded vial GO name CHANGE)
         Scene targetScene = SceneManager.GetSceneAt(SceneManager.sceneCount - 1);
         foreach (GameObject rootObject in targetScene.GetRootGameObjects())
         {
@@ -140,13 +146,17 @@ public class LoadPortalScene : ObjectState
         portalCam.SetActive(true);
         portalSound.Play();
     }
+
+    //if the player is in the activatable area and presses the action input, we set up the portal
     private void OnTriggerStay(Collider other)
     {
         if (SceneManager.sceneCount < 3 && InputManager.instance.actionInputDown && other.CompareTag("Player") && loadingDone)
         {
             StartCoroutine(OpenDoor());
+            //if the portal isn't flagged as active, it is a normal door
             if (portalsActivated)
             {
+                //else we activate the sight blocker and load the new scene that is needed for the portal
                 StartCoroutine(BlockSight());
                 StartCoroutine(LoadSceneAsync(nextScene));
             }

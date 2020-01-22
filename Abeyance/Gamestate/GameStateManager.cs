@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//this is the local game state manager, which every scene holds. it has all the object references that are needed, but does not have the state values
+//the state values are provided by the global game state manager
 public class GameStateManager : MonoBehaviour
 {
     public float initiationWaitTime;

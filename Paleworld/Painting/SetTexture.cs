@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//we create a new temp texture so we don't have to reset the textures in unity editor every time we play
 public class SetTexture : MonoBehaviour {
 	public GameObject textureSetter;
 	public MySplash splashScript;

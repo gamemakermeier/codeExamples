@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+//this is a script intended to ease the level design process
+//it sets objects to a terrain (or any collider that is on the provided layer) with several different preferences like only lowering or only raising
+//to prevent scenarios like placing your pebbles on the cave ceiling or placing your plane on the ground (by setting a reasonable detection range)
 namespace HitchHiker
 {
 	[System.Serializable]
